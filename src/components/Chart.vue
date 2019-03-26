@@ -12,7 +12,7 @@
           @mouseover="mouseOverLabel($event)"
           @mouseleave="mouseOutLabel($event)"
         >{{actor.value}}</label>
-        <input
+        <!-- <input
           type="checkbox"
           :name="actor.value"
           :value="actor.key"
@@ -20,7 +20,7 @@
           @change="inputChanged($event)"
           @mouseover="mouseOver($event)"
           @mouseleave="mouseOut($event)"
-        >
+        >-->
       </div>
     </div>
   </div>
