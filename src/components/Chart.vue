@@ -6,13 +6,20 @@
 
     <div class="filter-options-container">
       <div v-for="actor in actors" v-bind:key="actor.key" class="filter-options">
-        <label :for="actor.key">{{actor.value}}</label>
+        <label
+          :id="actor.key"
+          :for="actor.key"
+          @mouseover="mouseOverLabel($event)"
+          @mouseleave="mouseOutLabel($event)"
+        >{{actor.value}}</label>
         <input
           type="checkbox"
           :name="actor.value"
           :value="actor.key"
           :id="actor.key"
           @change="inputChanged($event)"
+          @mouseover="mouseOver($event)"
+          @mouseleave="mouseOut($event)"
         >
       </div>
     </div>
@@ -28,7 +35,7 @@ export default {
   },
   data() {
     return {
-      selectedKeyList: []
+      selectedKeyList: ["1", "2", "3", "4", "5", "6", "7"]
     };
   },
   computed: {
@@ -45,7 +52,6 @@ export default {
         })
         .filter(d => {
           if (this.selectedKeyList.findIndex(k => k === d.key) > -1) {
-            console.log(this.selectedKeyList.findIndex(k => k === d.key) > -1);
             return true;
           } else {
             return false;
@@ -71,6 +77,30 @@ export default {
         );
         this.selectedKeyList.splice(index, 1);
       }
+    },
+    mouseOver(event) {
+      this.selectedKeyList = [];
+      const highlightPathKey = event.target.value;
+      const index = this.selectedKeyList.findIndex(
+        k => k === event.target.value
+      );
+      this.selectedKeyList.splice(index, 1);
+      this.selectedKeyList.push(highlightPathKey);
+    },
+    mouseOut() {
+      this.selectedKeyList = ["1", "2", "3", "4", "5", "6", "7"];
+    },
+    mouseOverLabel(event) {
+      this.selectedKeyList = [];
+      const highlightPathKey = event.target.id;
+      const index = this.selectedKeyList.findIndex(
+        k => k === event.target.value
+      );
+      this.selectedKeyList.splice(index, 1);
+      this.selectedKeyList.push(highlightPathKey);
+    },
+    mouseOutLabel() {
+      this.selectedKeyList = ["1", "2", "3", "4", "5", "6", "7"];
     }
   },
   props: ["jsonData"]

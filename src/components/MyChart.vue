@@ -13,6 +13,7 @@ export default {
     return {
       w: 1500,
       h: 460,
+      pathid: 0,
       margin: {
         top: 20,
         right: 20,
@@ -52,6 +53,11 @@ export default {
     }
   },
   methods: {
+    nextPathId() {
+      this.pathid++;
+      console.log(this.pathid);
+      return "path" + this.pathid;
+    },
     xListComputed(v) {
       return this.xList.push(v);
     },
@@ -125,10 +131,31 @@ export default {
         .data(this.data)
         .enter()
         .append("path")
+        .attr("id", data => this.nextPathId())
         .attr("d", data => this.generatePath(data.value))
+        .on("mouseover", (d, i, n) => {
+          d3.select("#" + n[i].id).style("stroke-width", 6);
+
+          svg.selectAll("path").sort(function(a, b) {
+            // select the parent and sort the path's
+            if (a !== null && a.id != n[i].id) return -1;
+            // a is not the hovered element, send "a" to the back
+            else if (a != null) return 1; // a is the hovered element, bring "a" to the front
+          });
+
+          const pathsArray = [...svg.selectAll("path")._groups[0]];
+          console.log(pathsArray);
+
+          const index = pathsArray.findIndex(p => {
+            return p.id === n[i].id;
+          });
+        })
+        .on("mouseout", (d, i, n) => {
+          d3.select("#" + n[i].id).style("stroke-width", 4);
+        })
         .style("fill", "none")
         .style("stroke", data => this.getPathColor(data.key))
-        .style("stroke-width", 2);
+        .style("stroke-width", 4);
 
       g.selectAll("line-y")
         .data(this.xList)
@@ -143,7 +170,6 @@ export default {
     }
   },
   mounted() {
-    console.log("vvvvvvv");
     this.drawChart();
   },
   updated() {
@@ -152,7 +178,6 @@ export default {
   watch: {
     data() {
       this.drawChart();
-      console.log("data chanfed");
     }
   },
   props: ["data", "actions"]
@@ -161,4 +186,6 @@ export default {
 
 
 <style scoped>
+.dummy {
+}
 </style>
